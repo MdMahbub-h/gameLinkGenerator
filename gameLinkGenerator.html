@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Game Link Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        font-family: Arial, sans-serif;
+      }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #4a90e2, #9013fe);
+        height: 100vh;
+      }
+      .container {
+        width: 100%;
+        max-width: 600px;
+        height: 100%;
+        /* display: flex; */
+        flex-direction: column;
+        justify-content: center;
+        padding: 20px;
+      }
+      h2 {
+        color: #fff;
+        padding-top: 3%;
+        font-size: 2.2rem;
+        text-align: center;
+        margin-bottom: 0px;
+      }
+      label {
+        color: #fff;
+        font-weight: bold;
+        margin-top: 15px;
+        font-size: 1.2rem;
+      }
+      input {
+        width: 100%;
+        padding: 18px;
+        margin-top: 3px;
+        border-radius: 10px;
+        border: none;
+        font-size: 1.2rem;
+      }
+      button {
+        margin-top: 20px;
+        padding: 18px;
+        width: 100%;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.3rem;
+        cursor: pointer;
+        color: white;
+        background: #4a90e2;
+        transition: 0.3s;
+      }
+      button:hover {
+        background: #357ab7;
+      }
+      .copy-btn {
+        background: #28a745;
+        margin-top: 12px;
+      }
+      .copy-btn:hover {
+        background: #1e7e34;
+      }
+      .output {
+        width: 100%;
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+      }
+      #gameLink {
+        width: 100%;
+        padding: 18px;
+        border-radius: 10px;
+        font-size: 1.2rem;
+        border: none;
+        margin-bottom: 10px;
+      }
+      @media (max-width: 1000px) {
+        h2 {
+          font-size: 2rem;
+        }
+        label {
+          font-size: 1.2rem;
+        }
+        input,
+        button,
+        #gameLink {
+          font-size: 1.3rem;
+          padding: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Game Link Generator</h2>
+
+      <label>Base URL:</label>
+      <input type="text" id="baseUrl" placeholder="http://localhost:3002/" />
+
+      <label>Student Name:</label>
+      <input type="text" id="studentName" placeholder="Enter name" />
+
+      <label>Points:</label>
+      <input type="number" id="studentPoints" placeholder="Enter points" />
+
+      <label>Password:</label>
+      <input type="password" id="accessPassword" placeholder="Enter password" />
+
+      <button onclick="generateLink()">Generate Link</button>
+
+      <div class="output">
+        <input type="text" id="gameLink" readonly />
+        <button class="copy-btn" id="copyBtn" onclick="copyLink()">
+          Copy Link
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const secretKey = "£565lalsdflLHlher566546";
+      const pagePassword = "aDLe@/56js";
+
+      function generateLink() {
+        const enteredPassword = document.getElementById("accessPassword").value;
+        if (enteredPassword !== pagePassword) return;
+
+        const baseUrl =
+          document.getElementById("baseUrl").value ||
+          "https://yourdomain.com/game.html";
+        const name =
+          document.getElementById("studentName").value || "Hello Student";
+        const points = document.getElementById("studentPoints").value || 0;
+
+        const hash = CryptoJS.SHA256(name + points + secretKey).toString();
+        const fullLink = `${baseUrl}?name=${encodeURIComponent(
+          name
+        )}&points=${points}&hash=${hash}`;
+
+        document.getElementById("gameLink").value = fullLink;
+      }
+
+      function copyLink() {
+        const link = document.getElementById("gameLink");
+        if (!link.value) return;
+
+        link.select();
+        link.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+
+        const btn = document.getElementById("copyBtn");
+        const originalText = btn.textContent;
+        btn.textContent = "Link Copied";
+        setTimeout(() => {
+          btn.textContent = originalText;
+        }, 3000);
+      }
+    </script>
+  </body>
+</html>
